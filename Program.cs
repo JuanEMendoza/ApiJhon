@@ -1,5 +1,4 @@
 using Api.context;
-using Api.context;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,8 +8,7 @@ namespace Api
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);  // comments
-
+            var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container
             builder.Services.AddControllers();
@@ -31,17 +29,22 @@ namespace Api
                 options.AddPolicy("AllowRenderFrontend", policy =>
                 {
                     policy.WithOrigins(
-                                                                // Frontend en Render (PRODUCCIÓN)
-                            "http://localhost:5500",            // Desarrollo local
-                            "http://127.0.0.1:5500",            // Desarrollo local alternativa
-                            "http://localhost:3000",            // Otro puerto
-                            "http://localhost:8080",            // Otro puerto
-                            "http://localhost:5000",            // Otro puerto común
-                            "https://localhost:5500"            // HTTPS local
-                          )
-                          .AllowAnyMethod()                     // Permite GET, POST, PUT, DELETE, OPTIONS, PATCH, etc.
-                          .AllowAnyHeader()                     // Permite cualquier header (Content-Type, Authorization, etc.)
-                          .AllowCredentials();                  // Permite cookies y credenciales
+                        // ⚠️ IMPORTANTE: Reemplaza con la URL real de tu frontend en Render
+                        // Ejemplo: "https://admin-panel-xyz.onrender.com"
+                        "https://paginawebtienda.onrender.com",  // ⬅️ CAMBIA ESTO
+        
+                        // Desarrollo local
+                        "http://localhost:5500",
+                        "http://127.0.0.1:5500",
+                        "http://localhost:3000",
+                        "http://localhost:8080",
+                        "http://localhost:5000",
+                        "http://localhost:8000",              // ⬅️ Agregado para servidor Python
+                        "https://localhost:5500"
+                      )
+                      .AllowAnyMethod()                     // Permite GET, POST, PUT, DELETE, OPTIONS, PATCH, etc.
+                      .AllowAnyHeader()                     // Permite cualquier header (Content-Type, Authorization, etc.)
+                      .AllowCredentials();                  // Permite cookies y credenciales
                 });
 
                 // Política alternativa más permisiva para desarrollo (opcional)
@@ -50,6 +53,7 @@ namespace Api
                     policy.AllowAnyOrigin()
                           .AllowAnyMethod()
                           .AllowAnyHeader();
+                    // ⚠️ Nota: No se puede usar AllowCredentials() con AllowAnyOrigin()
                 });
             });
 
@@ -59,13 +63,13 @@ namespace Api
             var app = builder.Build();
 
             // Configure the HTTP request pipeline
-           // Activa Swagger siempre (en desarrollo y producción)
-app.UseSwagger();
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
-    c.RoutePrefix = "swagger";
-});
+            // Activa Swagger siempre (en desarrollo y producción)
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
+                c.RoutePrefix = "swagger";
+            });
 
             // ==========================================================
             // ? ORDEN CRÍTICO DE MIDDLEWARES PARA CORS
