@@ -24,19 +24,19 @@ namespace Api
                     ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("Connection_mysql"))));
 
             // ==========================================================
-            // ? CONFIGURACI”N DE CORS PARA FRONTEND EN RENDER
+            // ? CONFIGURACI√ìN DE CORS PARA FRONTEND EN RENDER
             // ==========================================================
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowRenderFrontend", policy =>
                 {
                     policy.WithOrigins(
-                                                                // Frontend en Render (PRODUCCI”N)
+                                                                // Frontend en Render (PRODUCCI√ìN)
                             "http://localhost:5500",            // Desarrollo local
                             "http://127.0.0.1:5500",            // Desarrollo local alternativa
                             "http://localhost:3000",            // Otro puerto
                             "http://localhost:8080",            // Otro puerto
-                            "http://localhost:5000",            // Otro puerto com˙n
+                            "http://localhost:5000",            // Otro puerto com√∫n
                             "https://localhost:5500"            // HTTPS local
                           )
                           .AllowAnyMethod()                     // Permite GET, POST, PUT, DELETE, OPTIONS, PATCH, etc.
@@ -44,7 +44,7 @@ namespace Api
                           .AllowCredentials();                  // Permite cookies y credenciales
                 });
 
-                // PolÌtica alternativa m·s permisiva para desarrollo (opcional)
+                // Pol√≠tica alternativa m√°s permisiva para desarrollo (opcional)
                 options.AddPolicy("AllowAll", policy =>
                 {
                     policy.AllowAnyOrigin()
@@ -53,36 +53,34 @@ namespace Api
                 });
             });
 
-            // Habilitar el cachÈ de respuestas
+            // Habilitar el cach√© de respuestas
             builder.Services.AddResponseCaching();
 
             var app = builder.Build();
 
             // Configure the HTTP request pipeline
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
-                    c.RoutePrefix = "swagger";
-                });
-            }
+           // Activa Swagger siempre (en desarrollo y producci√≥n)
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
+    c.RoutePrefix = "swagger";
+});
 
             // ==========================================================
-            // ? ORDEN CRÕTICO DE MIDDLEWARES PARA CORS
+            // ? ORDEN CR√çTICO DE MIDDLEWARES PARA CORS
             // ==========================================================
             // IMPORTANTE: CORS debe estar ANTES de UseRouting y UseAuthorization
-            // ASP.NET Core maneja autom·ticamente las peticiones OPTIONS (preflight)
+            // ASP.NET Core maneja autom√°ticamente las peticiones OPTIONS (preflight)
             // ==========================================================
 
-            // Habilitar cachÈ
+            // Habilitar cach√©
             app.UseResponseCaching();
 
             // Routing (debe ir antes de CORS en .NET 6+)
             app.UseRouting();
 
-            // ? CORS - DEBE IR DESPU…S de UseRouting pero ANTES de UseAuthorization
+            // ? CORS - DEBE IR DESPU√âS de UseRouting pero ANTES de UseAuthorization
             app.UseCors("AllowRenderFrontend");
 
             // Authorization (si lo necesitas)
