@@ -9,7 +9,8 @@ namespace Api
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            var builder = WebApplication.CreateBuilder(args);  // comments
+
 
             // Add services to the container
             builder.Services.AddControllers();
